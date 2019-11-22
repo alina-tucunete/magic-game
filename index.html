@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Emagia</title>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="bg">
+	<!--  Display first screen: button "Show characters" -->
+	<div id="showContainer" class="d-flex justify-content-center align-items-center playBtn">
+		<button class = "btn btn-success btn-lg px-5" id="showBtn">Show characters</button>
+	</div> <!--  end of showContainer -->
+
+	<!--  Display second screen: details about characters -->
+	<div id="charactersContainer" class="d-none justify-content-between align-items-center">
+		<div id="orderus-specifications" class="ml-5">
+			<ul class="list-group" id="orderus-list">
+			</ul>
+		</div>
+		<div id="orderus-character">
+			<img align="left" width="60%" src="img/orderus.png" id="orderus-character-1" style="display: none">
+		</div>
+		<div id="playContainer" class="d-none">
+			<button class = "btn btn-success btn-lg px-5" id="playBtn">Play</button>
+		</div>
+		<div id="beast-character">
+			<img align="right" width="60%" src="img/beast.png" id="beast-character-1" style="display: none">
+		</div>
+		<div id="beast-specifications" class="mr-5">
+			<ul class="list-group" id="beast-list">
+			</ul>
+		</div>
+	</div> <!--  end of charactersContainer -->
+
+	<!--  Display third screen: stats about the battle -->
+	<div id="roundStatsContainer" class="d-none">
+		<div class="container d-flex align-items-end justify-content-center flex-column">
+			<div class="row stats" >
+				<div class="col">
+				</div>
+				<div class="col">
+					<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+						<div id="carousel" class="carousel-inner">
+							<div class="carousel-item active p-5 mb-2">
+								<ul class="list-group">
+									<li class="list-group-item text-white">a</li>
+									<li class="list-group-item text-white">a</li>
+									<li class="list-group-item text-white">a</li>
+									<li class="list-group-item text-center font-weight-bold"><br>Who will be the winner?<br><br></li>
+									<li class="list-group-item text-white">a</li>
+									<li class="list-group-item text-white">a</li>
+									<li class="list-group-item text-white">a</li>
+								</ul>
+							</div>
+
+
+						</div>
+						<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="sr-only">Previous</span>
+						</a>
+						<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="sr-only">Next</span>
+						</a>
+					</div>
+				</div>
+				<div class="col">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<img src="img/orderus.png" align="left" width="60%">
+				</div>
+				<div class="col d-flex align-items-end justify-content-center">
+					<button class = "btn btn-success btn-lg" onClick="window.location.reload();">Play again?</button>
+				</div>
+				<div class="col">
+					<img src="img/beast.png" align="right" width="60%">
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+	$(function(){
+
+		var orderus;
+		var beast;
+		$("#showBtn").click(function(){
+			$.ajax({
+				url: 'emagia.php',
+				method: "GET",
+				data:{
+					start: 1,
+				},
+				success: function(result){
+					var game = JSON.parse(result);
+					$("#showContainer").toggleClass('d-flex d-none');
+
+					console.log(game);
+
+					orderus = game.characters.orderus;
+					Object.keys(orderus).forEach(key=>{
+						$("#orderus-list").append("<li class='list-group-item'>" + key + ": " + orderus[key] + "</li>");
+					});
+
+					beast = game.characters.beast;
+					Object.keys(beast).forEach(key=>{
+						$("#beast-list").append("<li class='list-group-item'>" + key + ": " + beast[key] + "</li>");
+					});
+
+					$("#charactersContainer").toggleClass('d-none d-flex');
+					$( "#orderus-character-1" ).slideToggle( "slow", function() {});
+					$( "#beast-character-1" ).slideToggle( "slow", function() {});
+
+					setTimeout(function(){
+						$("#playContainer").toggleClass('d-none d-flex');
+					}, 2000);
+
+					var battle = game.battle;
+					Object.keys(battle).forEach(key=>{
+						slide = document.createElement('div');
+						slide.setAttribute("id", "slide-"+key);
+						slide.setAttribute("class", "carousel-item p-5 mb-2");
+						$("#carousel").append(slide);
+
+						list = document.createElement('ul');
+						list.setAttribute("id", "list-"+key);
+						list.setAttribute("class", "list-group");
+						$("#slide-"+key).append(list);
+
+						$("#list-"+key).append("<li class='list-group-item active text-center'>" + key + "</li>");
+						
+						if(key=="Winner"){
+							$("#list-"+key).append("<li class='list-group-item text-center'><br><br><br><br><br>" + battle[key] + "<br><br><br><br><br><br><br><br></li>");
+						}else{
+
+							var round = battle[key];
+							Object.keys(round).forEach(key1=>{
+								$("#list-"+key).append("<li class='list-group-item'>" + round[key1] + "</li>");
+							});
+						}
+						
+						
+					});
+				},
+				error: function(){
+					alert("error");
+				}
+			}); //end of ajax
+		}); // end of onClick(showBtn)
+		$("#playBtn").click(function(){
+			$("#charactersContainer").toggleClass('d-flex d-none');
+			$("#roundStatsContainer").toggleClass('d-none d-flex');
+		});
+	});
+
+</script>
+</html>

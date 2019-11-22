@@ -1,0 +1,35 @@
+body{
+	height: 100vh;
+}
+
+.bg {
+	background: url('../img/bg.jpg');
+	background-position: center bottom;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.playBtn{
+	height: inherit;
+}
+
+#charactersContainer, #roundStatsContainer {
+	height: inherit;
+}
+
+.list-group{
+	min-width: max-content;
+}
+
+.orderus-character, .beast-character{
+	max-width:70vw;
+}
+
+.stats{
+	width:inherit;
+	height:50%;
+}
+
+.carousel, .carousel-inner, .carousel-item{
+	height:100%;
+}
